@@ -172,7 +172,8 @@ else
         y|Y|-y|-Y)
             get_access
         ;;
-        *) 
+        *)
+            echo "Skipping Access install..."
         ;;
     esac
 fi
