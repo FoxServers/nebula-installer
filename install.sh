@@ -3,6 +3,7 @@
 alias() {
     sudo mkdir /etc/nebula/
     sudo mv ./.nebula /etc/nebula/
+    sudo mkdir -p /opt/nebula/bin/
     sudo mv ./nebula /opt/nebula/bin/
     sudo chmod +x /opt/nebula/bin/*
     if ! grep -F "[FoxServers Nebula]" /etc/bash.bashrc; then
