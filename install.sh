@@ -36,10 +36,8 @@ create_folders() {
 init_python() {
     echo "Initializing python for nebula core"
     sudo python3 -m venv /opt/nebula/.venv
-    source /opt/nebula/.venv/bin/activate
     echo "Installing requirements..."
-    find /opt/nebula/ -type f -name "*requirements.txt" -exec /opt/nebula/.venv/bin/pip install -r {} ';'
-    deactivate
+    find /opt/nebula/ -type f -name "*requirements.txt" -exec sudo /opt/nebula/.venv/bin/pip install -r {} ';'
     echo "Done!"
 }
 
@@ -101,7 +99,7 @@ get_access() {
 
 install_services() {
     echo "Installing services..."
-    sudo mv /opt/nebula/*.service /etc/systemd/system/
+    sudo mv /opt/nebula/**/*.service /etc/systemd/system/
     sudo systemctl daemon-reload
     echo "Done!"
 }
@@ -146,10 +144,10 @@ smb() {
 # Check if yes flag has been passed to install all first-party extensions
 case $1 in
     -y|-Y)
-        yes=true
+        yes=1
     ;;
     *)
-        yes=false
+        yes=0
     ;;
 esac
 
@@ -165,7 +163,7 @@ create_folders
 get_core
 
 # Install Access (Optional)
-if ["$yes" == true] ; then
+if [ $yes -eq 1 ]; then
     get_access
 else
     read -p "Install Nebula Access Extension? (y/N): " access
