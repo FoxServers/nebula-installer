@@ -146,10 +146,10 @@ smb() {
 # Check if yes flag has been passed to install all first-party extensions
 case $1 in
     -y|-Y)
-        $yes=true
+        yes=true
     ;;
     *)
-        $yes=false
+        yes=false
     ;;
 esac
 
