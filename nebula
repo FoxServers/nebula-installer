@@ -45,12 +45,13 @@ done
 # Function to handle calls
 main() {
     local namespace=$1
-    local function=$2
-    shift 2
+    shift
 
     if [[ " ${valid_namespaces[@]} " == *" $namespace "* ]]; then
         "$namespace" "$@"
     else
+        local function=$1
+        shift
         local full_function="${namespace}_${function}"
         if declare -f "$full_function" > /dev/null; then
             "$full_function" "$@"
