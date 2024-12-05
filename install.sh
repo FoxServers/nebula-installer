@@ -99,7 +99,7 @@ get_access() {
 
 install_services() {
     echo "Installing services..."
-    find /opt/nebula/ -type f -name "*requirements.txt" -exec sudo mv {} /etc/systemd/system/';'
+    find /opt/nebula/ -type f -name "*.service" -exec sudo mv {} /etc/systemd/system/ ';'
     sudo systemctl daemon-reload
     echo "Done!"
 }
