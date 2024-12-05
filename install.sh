@@ -3,6 +3,7 @@
 alias() {
     sudo mkdir /etc/nebula/
     sudo mv ./.nebula /etc/nebula/
+    sudo mv ./nebula /opt/nebula/bin/
     if ! grep -F "[FoxServers Nebula]" /etc/bash.bashrc; then
         sudo /usr/bin/bash -c 'echo "#[FoxServers Nebula]
         . /etc/nebula/.nebula" >> /etc/bash.bashrc'
@@ -33,7 +34,7 @@ create_folders() {
 }
 
 init_python() {
-    echo "Initializing python for foxservers core"
+    echo "Initializing python for nebula core"
     sudo python3 -m venv /opt/nebula/.venv
     source /opt/nebula/.venv/bin/activate
     echo "Installing requirements..."
@@ -67,7 +68,8 @@ get_core() {
     cleanup_download
     echo "Fixing permissions..."
     sudo chmod +x /opt/nebula/core/bin/*
-    sudo chmod -x ./services/*.service
+    sudo chmod +x /opt/nebula/core/scripts/*
+    sudo chmod -x /opt/nebula/core/services/*.service
     echo "Done!"
 }
 

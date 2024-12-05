@@ -1,0 +1,80 @@
+#!/bin/sh
+help() {
+    echo "See our documentation: https://foxservers.net/documentation/nebula"
+}
+
+# List of valid namespaces
+valid_namespaces=("add" "init" "reload" "remove" "update")
+
+# Declare hooks dynamically based on valid namespaces
+for namespace in "${valid_namespaces[@]}"; do
+    declare -a "${namespace}_hooks=()"
+done
+
+# Dynamic hook invoking
+invoke_hooks() {
+    local hooks_array_name="$1"
+    shift
+    local -n hooks_array="$hooks_array_name"
+    for hook in "${hooks_array[@]}"; do
+        $hook "$@"
+    done
+}
+
+# Dynamic hook invoking
+register_hook() {
+    local hooks_array_name="$1"
+    local hook_function="$2"
+    local -n hook_array="$hooks_array_name"
+    hook_array+=("$hook_function")
+}
+
+# Check for function collisions
+check_collision() {
+    local function_name="$1"
+    local file="$2"
+    if declare -f "$function_name" > /dev/null; then
+        echo "Error: Function $function_name already exists. Possible collision detected from $file"
+        exit 1
+    fi
+}
+
+# Loop to dynamically define functions
+for namespace in "${valid_namespaces[@]}"; do
+    eval "$namespace() { invoke_hooks \"${namespace}_hooks\" \"\$@\"; }"
+done
+
+for directory in /opt/nebula/core/bin/ /opt/nebula/extensions/*/bin/; do
+    for file in "$directory"/*; do
+        if [ -f "$file" ]; then
+            before_functions=$(declare -F | awk '{print $3}')
+            source "$file"
+            after_functions=$(declare -F | awk '{print $3}')
+            for function_name in $after_functions; do
+                if ! echo "$before_functions" | grep -qx "$function_name"; then
+                    check_collision "$function_name" "$file"
+                fi
+            done
+        fi
+    done
+done
+
+# Function to handle calls
+main() {
+    local namespace=$1
+    local function=$2
+    shift 2
+
+    if [[ " ${valid_namespaces[@]} " == *" $namespace "* ]]; then
+        "$namespace" "$@"
+    else
+        local full_function="${namespace}_${function}"
+        if declare -f "$full_function" > /dev/null; then
+            "$full_function" "$@"
+        else
+            help
+        fi
+    fi
+}
+
+main "$@"
