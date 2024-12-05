@@ -93,13 +93,13 @@ get_access() {
     cleanup_download
     echo "Fixing permissions..."
     sudo chmod +x /opt/nebula/extensions/access/bin/*
-    sudo chmod -x opt/nebula/extensions/access/services/*.service
+    sudo chmod -x /opt/nebula/extensions/access/services/*.service
     echo "Done!"
 }
 
 install_services() {
     echo "Installing services..."
-    sudo mv /opt/nebula/**/*.service /etc/systemd/system/
+    find /opt/nebula/ -type f -name "*requirements.txt" -exec sudo mv {} /etc/systemd/system/';'
     sudo systemctl daemon-reload
     echo "Done!"
 }
@@ -158,6 +158,9 @@ cd /tmp/nebula/
 
 # Build empty directories
 create_folders
+
+# Move config.json into nebula
+sudo mv ./config.json /opt/nebula/
 
 # Install Core (Not Optional)
 get_core
