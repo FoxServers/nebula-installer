@@ -146,10 +146,10 @@ smb() {
 # Check if yes flag has been passed to install all first-party extensions
 case $1 in
     -y|-Y)
-        $yes = true
+        $yes=true
     ;;
     *)
-        $yes = false
+        $yes=false
     ;;
 esac
 
@@ -165,7 +165,7 @@ create_folders
 get_core
 
 # Install Access (Optional)
-if ["$yes" = true] ; then
+if ["$yes" == true] ; then
     get_access
 else
     read -p "Install Nebula Access Extension? (y/N): " access
