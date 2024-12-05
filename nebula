@@ -29,16 +29,6 @@ register_hook() {
     hook_array+=("$hook_function")
 }
 
-# Check for function collisions
-check_collision() {
-    local function_name="$1"
-    local file="$2"
-    if declare -f "$function_name" > /dev/null; then
-        echo "Error: Function $function_name already exists. Possible collision detected from $file"
-        exit 1
-    fi
-}
-
 # Loop to dynamically define functions
 for namespace in "${valid_namespaces[@]}"; do
     eval "$namespace() { invoke_hooks \"${namespace}_hooks\" \"\$@\"; }"
@@ -47,14 +37,7 @@ done
 for directory in /opt/nebula/core/bin/ /opt/nebula/extensions/*/bin/; do
     for file in "$directory"/*; do
         if [ -f "$file" ]; then
-            before_functions=$(declare -F | awk '{print $3}')
             source "$file"
-            after_functions=$(declare -F | awk '{print $3}')
-            for function_name in $after_functions; do
-                if ! echo "$before_functions" | grep -qx "$function_name"; then
-                    check_collision "$function_name" "$file"
-                fi
-            done
         fi
     done
 done
