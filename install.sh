@@ -6,6 +6,7 @@ alias() {
     sudo mkdir -p /opt/nebula/bin/
     sudo mv ./nebula /opt/nebula/bin/
     sudo chmod +x /opt/nebula/bin/*
+    sudo mv ./nebula-redis.env /opt/nebula/etc/
     if ! grep -F "[FoxServers Nebula]" /etc/bash.bashrc; then
         sudo /usr/bin/bash -c 'echo "#[FoxServers Nebula]
         . /etc/nebula/.nebula" >> /etc/bash.bashrc'
@@ -102,6 +103,7 @@ get_access() {
 install_services() {
     echo "Installing services..."
     find /opt/nebula/ -type f -name "*.service" -exec sudo mv {} /etc/systemd/system/ ';'
+    find /etc/systemd/system/ -type f -name "nebula*.service" -exec sudo systemctl enable {} ';'
     sudo systemctl daemon-reload
     echo "Done!"
 }

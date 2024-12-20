@@ -1,6 +1,10 @@
 {
-    "version": "2.0",
+    "version": "1.0.0",
     "servers": [
 
-    ]
+    ],
+    "redis": {
+        "ip":"localhost",
+        "port":6379
+    }
 }
