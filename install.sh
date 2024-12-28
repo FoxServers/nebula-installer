@@ -2,6 +2,8 @@
 
 alias() {
     sudo mkdir /etc/nebula/
+    sudo mkdir /etc/nebula/core/
+    sudo mkdir /etc/nebula/core/logreader/
     sudo mv ./.nebula /etc/nebula/
     sudo mkdir -p /opt/nebula/bin/
     sudo mv ./nebula /opt/nebula/bin/
